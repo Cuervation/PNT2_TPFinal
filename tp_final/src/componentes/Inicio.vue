@@ -1,6 +1,6 @@
 <template>
   <section class="src-componentes-rosco">
-    <h1>src-componentes-rosco Component</h1>
+    <h1>src-componentes-Inicio Component</h1>
     <vue-form :state="formState" @submit.prevent="enviar()">                    
       <validate tag="div">
         <label for="nombre">Nombre</label>
@@ -30,7 +30,7 @@
           id="edad"
           class="form-control"
           autocomplete="off"
-          v-model.number="$store.state.edad"
+          v-model.number="formData.edad"
           name="edad"
           required
           :min="edadMin"
@@ -64,6 +64,7 @@ export default {
   data() {
     return {
       url: "http://localhost:8080/jugador",
+      urlFinal: "http://localhost:8080/finalizar",
       edadMin: 6,
       edadMax: 110,
       formData: this.getInitialData(),
@@ -73,28 +74,39 @@ export default {
   methods: {
       getInitialData() {
         return {
-          nombre: null,      
-          edad: null,          
+        nombre: null,
+        edad: null        
         }
+        
     },    
     enviar() {
-      console.log({...this.formData})
-      this.formData = this.getInitialData()      
+      let jugador = { ...this.formData }
+      this.nombre = jugador.nombre
+      this.edad =  jugador.edad
+      this.postUsuario()  
+      this.formData = this.getInitialData()   
+      this.formState._reset()
+
     },    
     async postUsuario() {
       let usuarioNew = {
           nombre: this.nombre,      
           edad: this.edad, 
       };
-      try {
-        console.log("-------------");
+      try { 
+       
         let { data: usuario, status: estado } = await this.axios.post(
           this.url,
           usuarioNew
-        );
-        console.log(usuario.nombre);
+        );        
         console.log(estado);
-        console.log("-------------");
+        if ( estado == 201) {        
+          await this.$store.dispatch('setNombreEdad', usuario.nombre,usuario.edad);                              
+          setTimeout(() => {
+            this.$router.push({path:'/rosco'})
+          },2000)
+          
+        }        
       } catch (error) {
         console.log(error.response.status);
         console.log(error.response.data);

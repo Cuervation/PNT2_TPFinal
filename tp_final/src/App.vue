@@ -4,20 +4,23 @@
       <h1>Bienvenidos a Vue CLI</h1>
       <br>
 
-      <Inicio />      
+      <NavBar />            
+      <router-view></router-view>
 
     </div>
   </div>
 </template>
 
 <script>
-import Inicio from './componentes/Inicio.vue'
+import NavBar from './componentes/NavBar.vue'
+//import Pantalla from './componentes/Pantalla.vue'
 
 export default {
   name: 'App',
   components: {
-    Inicio
-  }
+    NavBar//,Pantalla
+    
+    }
 }
 </script>
 
