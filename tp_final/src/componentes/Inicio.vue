@@ -1,7 +1,11 @@
 <template>
-  <section class="src-componentes-rosco">
-    <h1>src-componentes-Inicio Component</h1>
-    <vue-form :state="formState" @submit.prevent="enviar()">                    
+  <section class="src-componentes-rosco">    
+      <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+      </div>
+      <vue-form :state="formState" @submit.prevent="enviar()">
+      <h3>Pasapalabra</h3>
       <validate tag="div">
         <label for="nombre">Nombre</label>
         <input
@@ -9,6 +13,7 @@
           id="nombre"
           class="form-control"
           autocomplete="off"
+          placeholder="Ingresa tu nombre"
           v-model.trim="formData.nombre"
           name="nombre"
           required
@@ -20,9 +25,6 @@
           </div>
         </field-messages>
       </validate>
-
-      <br />
-
       <validate tag="div">
         <label for="edad">Edad</label>
         <input
@@ -30,6 +32,7 @@
           id="edad"
           class="form-control"
           autocomplete="off"
+          placeholder="Ingresa tu edad"
           v-model.number="formData.edad"
           name="edad"
           required
@@ -50,15 +53,16 @@
         </field-messages>
       </validate>
 
-      <br />
-      <button class="btn btn-success my-3" :disabled="formState.$invalid">Ingresar</button>
+      <button :disabled="formState.$invalid">Ingresar</button>
     </vue-form>
   </section>
 </template>
 
 <script >
+
 export default {
   name: "src-componentes-rosco",
+
   props: [],
   mounted() {},
   data() {
@@ -68,45 +72,55 @@ export default {
       edadMin: 6,
       edadMax: 110,
       formData: this.getInitialData(),
-      formState : {},
+      formState: {},
     };
   },
   methods: {
-      getInitialData() {
-        return {
+    getInitialData() {
+      return {
         nombre: null,
-        edad: null        
-        }
-        
-    },    
+        edad: null,
+      };
+    },
     enviar() {
-      let jugador = { ...this.formData }
-      this.nombre = jugador.nombre
-      this.edad =  jugador.edad
-      this.postUsuario()  
-      this.formData = this.getInitialData()   
-      this.formState._reset()
+      let jugador = { ...this.formData };
+      this.nombre = jugador.nombre;
+      this.edad = jugador.edad;
+      this.getFinalizar() 
+      this.postUsuario();
+      this.formData = this.getInitialData();
+      this.formState._reset();
+    },
 
-    },    
+    async getFinalizar() {
+      try {
+        await this.axios.get(this.urlFinal);
+      } catch (error) {
+        console.log("No pasa nada con el finalizar", error.message);
+      }
+    },
+
+
     async postUsuario() {
       let usuarioNew = {
-          nombre: this.nombre,      
-          edad: this.edad, 
+        nombre: this.nombre,
+        edad: this.edad,
       };
-      try { 
-       
+      try {
         let { data: usuario, status: estado } = await this.axios.post(
           this.url,
           usuarioNew
-        );        
+        );
         console.log(estado);
-        if ( estado == 201) {        
-          await this.$store.dispatch('setNombreEdad', usuario.nombre,usuario.edad);                              
-          setTimeout(() => {
-            this.$router.push({path:'/rosco'})
-          },2000)
-          
-        }        
+        if (estado == 201) {
+          await this.$store.dispatch(
+            "setNombreEdad",
+            usuario.nombre,
+            usuario.edad
+          );
+          this.$router.push({ path: "/pantalla" });
+
+        }
       } catch (error) {
         console.log(error.response.status);
         console.log(error.response.data);
@@ -119,6 +133,5 @@ export default {
 </script>
 
 <style scoped lang="css">
-.src-componentes-rosco {
-}
+  @import "../assets/css/login.css";
 </style>

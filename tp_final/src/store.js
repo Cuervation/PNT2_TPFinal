@@ -7,19 +7,26 @@ export default new Vuex.Store({
     state : {
         nombre : '',
         edad : '',
+        puntaje : 0
     },
     actions : {
         setNombreEdad({commit},nombre,edad) {                             
-            commit('obtenerNombre', nombre)
-            commit('obtenerEdad', edad)
+            commit('cargarNombre', nombre)
+            commit('cargarEdad', edad)
             },       
+        setPuntaje({commit},puntaje) {                             
+            commit('cargarPuntaje', puntaje)            
+            },                   
     },
     mutations : {
-        obtenerNombre(state, nombre) {            
+        cargarNombre(state, nombre) {            
             state.nombre = nombre
         },
-        obtenerEdad(state, edad) {            
+        cargarEdad(state, edad) {            
             state.edad = edad
         },        
+        cargarPuntaje(state, puntaje) {            
+            state.puntaje = puntaje
+        },         
     }
 })

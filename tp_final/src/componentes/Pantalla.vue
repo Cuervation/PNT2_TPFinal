@@ -1,17 +1,20 @@
 <template >
 
   <section class="src-componentes-pantalla">
-     <div class="jumbotron">
-      <h1>src-componentes-pantalla Component</h1>
-     </div>
+     <Header  />
+
+     
   </section>
 
 </template>
 
 <script >
-
+  import Header from './Header.vue'
   export default  {
     name: 'src-componentes-pantalla',
+    components: {
+      Header,    
+    },    
     props: [],
     mounted () {
 
@@ -34,11 +37,13 @@
 
 <style scoped lang="css">
   .src-componentes-pantalla {
-
+      background-image: url("../assets/img/pasapalabra.jfif");
   }
-
-    .jumbotron {
+  .jumbotron {
     background-color: rgb(240, 15, 15);
     color: rgb(240, 239, 243);
+    padding: 0;    
   }
+
+
 </style>
