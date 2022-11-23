@@ -1,14 +1,15 @@
-<template >
+<template>
 
-  <section class="src-componentes-nav-bar">    
+  <section class="src-componentes-final">
+    <h1>src-componentes-final Component</h1>
   </section>
 
 </template>
 
-<script >
+<script>
 
   export default  {
-    name: 'src-componentes-nav-bar',
+    name: 'src-componentes-final',
     props: [],
     mounted () {
 
@@ -30,7 +31,7 @@
 </script>
 
 <style scoped lang="css">
-  .src-componentes-nav-bar {
+  .src-componentes-final {
 
   }
 </style>

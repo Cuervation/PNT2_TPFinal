@@ -1,21 +1,48 @@
 <template >
-  <section class="src-componentes-rosco">
-    <div class="jumbotron">
-      <h1>src-componentes-rosco Component</h1>
-      <div class="card-deck" style="width: 18rem">
-        <!-- First Card -->
-        <div class="card">
-          <div class="card-title">{{ letra }}</div>
+  <section>
+    <Header />
+    <div class="row d-flex justify-content-center">
+      <div class="jumbotron col-md-6 justify-content-center">
+        <div class="col-md-3 justify-content-center text-center">
+          <div class="card-deck">
+            <div class="card">
+              <h1>Letra</h1>
+              <div class="card-title">{{ letra }}</div>
+            </div>
+          </div>
         </div>
-        <div>{{ pregunta }}</div>
+        <h1>{{ pregunta }}</h1>
 
         <vue-form :state="formState" @submit.prevent="postRespuesta()">
           <validate tag="div">
-            <label for="respuesta">Respuesta</label>
-            <input type="text" id="respuesta" class="form-control" autocomplete="off" v-model.trim="formData.respuesta" name="nombre"
-              required :minlength="respuestaMinLength" :maxlength="respuestaMaxLength" no-espacios
-            />
-            <field-messages name="nombre" show="$dirty">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span
+                  for="respuesta"
+                  class="input-group-text"
+                  id="inputGroup-sizing-lg"
+                  >Respuesta</span
+                >
+              </div>
+              <input
+                type="text"
+                id="respuesta"
+                class="form-control"
+                aria-label="Large"
+                aria-describedby="inputGroup-sizing-sm"
+                autocomplete="off"
+                v-model.trim="formData.respuesta"
+                name="respuesta"
+                required
+                :minlength="respuestaMinLength"
+                :maxlength="respuestaMaxLength"
+                no-espacios
+              />
+              <button class="btn btn-info my-3" :disabled="formState.$invalid">
+                Siguiente
+              </button>
+            </div>
+            <field-messages name="respuesta" show="$dirty">
               <div slot="required" class="alert alert-danger mt-1">
                 Campo requerido
               </div>
@@ -24,25 +51,30 @@
                 {{ respuestaMinLength }} caracteres.
               </div>
               <div slot="maxlength" class="alert alert-danger mt-1">
-                Este campo no debe superar los {{ respuestaMaxLength }} caracteres.
+                Este campo no debe superar los
+                {{ respuestaMaxLength }} caracteres.
               </div>
               <div slot="no-espacios" class="alert alert-danger mt-1">
                 Este campo no permite espacios intermedios
               </div>
             </field-messages>
-          </validate>        
-          <button class="btn btn-danger my-3" :disabled="formState.$invalid">
-            Siguiente
-          </button>          
-              </vue-form>    
-          </div>
-        </div>
-    </section>
+          </validate>
+        </vue-form>
+        <p v-if="resultado == 0"></p>
+        <p v-else-if="resultado == 1" class="alert alert-danger">INCORRECTO!</p>
+        <p v-else-if="resultado == 2" class="alert alert-success">CORRECTO!</p>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
+import Header from './Header.vue'
 export default {
   name: "src-componentes-rosco",
+  components: {
+    Header,    
+  },  
   props: [],
   mounted() {
     this.getPregunta();
@@ -51,6 +83,7 @@ export default {
     return {
       urlPregunta: "http://localhost:8080/pregunta",
       urlRespuesta: "http://localhost:8080/evaluacion",
+      urlPuntaje: "http://localhost:8080/puntaje",
       letra: "",
       pregunta: "",
       respuesta: "",
@@ -58,36 +91,39 @@ export default {
       respuestaMaxLength: 25,
       formState: {},
       formData: this.getInitialData(),
+      resultado: 0,
     };
   },
   methods: {
-        getInitialData() {
+    getInitialData() {
       return {
         respuesta: null,
+      };
+    },
 
-      }
-    },  
-
-    async postRespuesta() {      
+    async postRespuesta() {
+      let res = { ...this.formData };
+      this.respuesta = res.respuesta;
       let respuestaJson = {
-          respuesta : this.respuesta
-      };         
-      try {        
+        respuesta: this.respuesta,
+      };
+      try {
         let { data, status: estado } = await this.axios.post(
           this.urlRespuesta,
-          respuestaJson 
-        ); 
-                        
-        console.log(estado);
-        console.log(data);
-        if ( estado == 200) {
-          console.log(data.mensaje);                
+          respuestaJson
+        );
+        if (estado == 200) {
+          if (data.mensaje == "incorrecto!!") {
+            this.resultado = 1;
+          } else {
+            this.resultado = 2;
+          }
           setTimeout(() => {
             this.getPregunta();
-            //console.log(mensaje);       
-          },3000)
-          
-        }        
+            this.getPuntaje(this.urlPuntaje);
+            this.resultado = 0;
+          }, 1000);
+        }
       } catch (error) {
         console.log(error.response.status);
         console.log(error.response.data);
@@ -97,18 +133,12 @@ export default {
 
     async getPregunta() {
       try {
-        let { data: preguntas, status: estado } = await this.axios.get(
-          this.urlPregunta
-        );
-        console.log(preguntas);
+        let { data: preguntas } = await this.axios.get(this.urlPregunta);
+        //console.log(preguntas);
         this.letra = preguntas.letra;
         this.pregunta = preguntas.pregunta;
-        console.log(preguntas.letra);
-        console.log(estado);
       } catch (error) {
-        console.log(error.response.status);
-        console.log(error.response.data);
-        console.error("Error en postUsuario", error.message);
+        this.goFinal();
       }
     },
   },
@@ -117,8 +147,9 @@ export default {
 </script>
 
 <style scoped lang="css">
-  .card-title {
-    font-size: 135px;
-    text-align: center;
-  }
+.card-title {
+  font-size: 135px;
+  text-align: center;
+}
 </style>
+

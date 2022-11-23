@@ -1,10 +1,10 @@
 <template>
-  <section class="src-componentes-rosco">    
-      <div class="background">
-        <div class="shape"></div>
-        <div class="shape"></div>
-      </div>
-      <vue-form :state="formState" @submit.prevent="enviar()">
+  <section class="fondo" >
+    <div class="background">
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+    <vue-form :state="formState" @submit.prevent="enviar()">
       <h3>Pasapalabra</h3>
       <validate tag="div">
         <label for="nombre">Nombre</label>
@@ -59,12 +59,12 @@
 </template>
 
 <script >
-
 export default {
   name: "src-componentes-rosco",
 
   props: [],
   mounted() {},
+  created() {document.body.style.backgroundColor = ' #080710 '},
   data() {
     return {
       url: "http://localhost:8080/jugador",
@@ -86,7 +86,7 @@ export default {
       let jugador = { ...this.formData };
       this.nombre = jugador.nombre;
       this.edad = jugador.edad;
-      this.getFinalizar() 
+      this.getFinalizar();
       this.postUsuario();
       this.formData = this.getInitialData();
       this.formState._reset();
@@ -99,7 +99,6 @@ export default {
         console.log("No pasa nada con el finalizar", error.message);
       }
     },
-
 
     async postUsuario() {
       let usuarioNew = {
@@ -118,8 +117,7 @@ export default {
             usuario.nombre,
             usuario.edad
           );
-          this.$router.push({ path: "/pantalla" });
-
+          this.goPantalla()
         }
       } catch (error) {
         console.log(error.response.status);
@@ -132,6 +130,9 @@ export default {
 };
 </script>
 
-<style scoped lang="css">
-  @import "../assets/css/login.css";
+<style scoped lang="css" src="../assets/css/login.css">
+
+
 </style>
+
+

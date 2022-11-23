@@ -5,6 +5,7 @@ import Inicio from './componentes/Inicio.vue'
 import Pantalla from './componentes/Pantalla.vue'
 import Rosco from './componentes/Rosco.vue'
 import Header from './componentes/Header.vue'
+import Ranking from './componentes/Ranking.vue'
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,7 @@ export const router = new VueRouter({
         { path: '/rosco', component: Rosco },
         { path: '/pantalla', component: Pantalla },
         { path: '/header', component: Header },
+        { path: '/ranking', component: Ranking },
     ]
 })
 
