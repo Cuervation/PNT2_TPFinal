@@ -2,6 +2,14 @@ import Vue from 'vue'
 
 const miMixinGlobal = {
     methods: {
+        async getFinalizar(url) {
+            try {
+              await this.axios.get(url);
+            } catch (error) {
+              console.log("No pasa nada con el finalizar", error.message);
+            }
+          },
+        
         goRanking(){
             this.$router.push({ path: "/ranking" });
           },
@@ -14,6 +22,10 @@ const miMixinGlobal = {
         goFinal(){
             this.$router.push({ path: "/final" })
             }   ,
+
+        goInicio(){
+            this.$router.push({ path: "/inicio" })
+            }   ,            
         async getPuntaje(url) {
             try {
                 console.log(url)

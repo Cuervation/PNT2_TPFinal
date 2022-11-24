@@ -4,7 +4,7 @@
       <div class="shape"></div>
       <div class="shape"></div>
     </div>
-    <vue-form :state="formState" @submit.prevent="enviar()">
+    <vue-form class="form-login" :state="formState" @submit.prevent="enviar()">
       <h3>Pasapalabra</h3>
       <validate tag="div">
         <label for="nombre">Nombre</label>
@@ -86,19 +86,13 @@ export default {
       let jugador = { ...this.formData };
       this.nombre = jugador.nombre;
       this.edad = jugador.edad;
-      this.getFinalizar();
+      this.getFinalizar(this.urlFinal);
       this.postUsuario();
       this.formData = this.getInitialData();
       this.formState._reset();
     },
 
-    async getFinalizar() {
-      try {
-        await this.axios.get(this.urlFinal);
-      } catch (error) {
-        console.log("No pasa nada con el finalizar", error.message);
-      }
-    },
+
 
     async postUsuario() {
       let usuarioNew = {
@@ -131,7 +125,9 @@ export default {
 </script>
 
 <style scoped lang="css" src="../assets/css/login.css">
-
+html body{
+    background: #080710 !important;
+}
 
 </style>
 

@@ -4,10 +4,10 @@
       <div class="jumbotron col-md-6">        
         <div class="row">
           <div class="col-md-8 text-center">
-            <h1>Ranking Pasapalabra</h1>
+            <h1 class="mt-1">Ranking Pasapalabra</h1>
           </div>
           <div class="col-md-4">
-            <button class="btn btn-info my-3 mr-3" @click="goPantalla()">Volver!</button>          
+            <button class="btn btn-info my-2 botonazo-small" @click="goInicio()">Volver!</button>          
           </div>
         </div>
         <hr>             
@@ -64,9 +64,12 @@ export default {
 
 <style scoped lang="css">
 .jumbotron {
-  background-color: rgb(168, 170, 206);
+  background-color: #fe8d61de;
   color: rgb(240, 239, 243);
   padding: 0;
+}
+h1{  
+  font-size: 65px;
 }
 </style>
 

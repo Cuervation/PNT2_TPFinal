@@ -3,17 +3,17 @@
     <Header />
     <div class="row d-flex justify-content-center">
       <div class="jumbotron col-md-6 justify-content-center">
-        <div class="col-md-3 justify-content-center text-center">
-          <div class="card-deck">
+        <div class="col-md-12 justify-content-center text-center d-flex">
+          <div class="card-deck col-md-5">
             <div class="card">
               <h1>Letra</h1>
               <div class="card-title">{{ letra }}</div>
             </div>
           </div>
         </div>
-        <h1>{{ pregunta }}</h1>
+        <h2 class="my-5" >{{ pregunta }}</h2>
 
-        <vue-form :state="formState" @submit.prevent="postRespuesta()">
+        <vue-form class="formulario" :state="formState" @submit.prevent="postRespuesta()">
           <validate tag="div">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -38,7 +38,7 @@
                 :maxlength="respuestaMaxLength"
                 no-espacios
               />
-              <button class="btn btn-info my-3" :disabled="formState.$invalid">
+              <button class="btn btn-info" :disabled="formState.$invalid">
                 Siguiente
               </button>
             </div>
@@ -58,11 +58,12 @@
                 Este campo no permite espacios intermedios
               </div>
             </field-messages>
-          </validate>
+          </validate>          
         </vue-form>
         <p v-if="resultado == 0"></p>
         <p v-else-if="resultado == 1" class="alert alert-danger">INCORRECTO!</p>
         <p v-else-if="resultado == 2" class="alert alert-success">CORRECTO!</p>
+        <p v-else-if="resultado == 3" class="alert alert-info">PASAMOS A LA SIGUIENTE!</p>
       </div>
     </div>
   </section>
@@ -84,6 +85,8 @@ export default {
       urlPregunta: "http://localhost:8080/pregunta",
       urlRespuesta: "http://localhost:8080/evaluacion",
       urlPuntaje: "http://localhost:8080/puntaje",
+      urlRanking: "http://localhost:8080/guardarRanking",
+      urlFinal: "http://localhost:8080/finalizar",
       letra: "",
       pregunta: "",
       respuesta: "",
@@ -115,8 +118,10 @@ export default {
         if (estado == 200) {
           if (data.mensaje == "incorrecto!!") {
             this.resultado = 1;
-          } else {
+          } else if (data.mensaje == "correcto!!"){
             this.resultado = 2;
+          } else {
+            this.resultado = 3;
           }
           setTimeout(() => {
             this.getPregunta();
@@ -130,15 +135,26 @@ export default {
         console.error("Error en postUsuario", error.message);
       }
     },
-
+    async actualizaRanking(){
+      let rankingJson = {
+        nombre : this.$store.state.nombre,
+        puntaje : this.$store.state.puntaje,
+      };
+      console.log(rankingJson);      
+      await this.axios.post(
+          this.urlRanking,
+          rankingJson
+        );
+    },
     async getPregunta() {
       try {
-        let { data: preguntas } = await this.axios.get(this.urlPregunta);
-        //console.log(preguntas);
+        let { data: preguntas } = await this.axios.get(this.urlPregunta);        
         this.letra = preguntas.letra;
         this.pregunta = preguntas.pregunta;
       } catch (error) {
-        this.goFinal();
+          this.getFinalizar(this.urlFinal);
+          this.actualizaRanking();
+          this.goRanking();
       }
     },
   },
@@ -147,9 +163,32 @@ export default {
 </script>
 
 <style scoped lang="css">
+.jumbotron{
+  background: #f8f9fab8;
+}
+.input-group-prepend span{
+  height: 39px;
+  background-color: #016bd6;
+  color: white;
+}
 .card-title {
   font-size: 135px;
   text-align: center;
+  color: #016bd6;
 }
+h1{
+  background-color: #016bd6;
+}
+
+h2{
+  color: #016bd6;
+  text-align: center;
+}
+.card{
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #016bd6;
+  
+  }
 </style>
 
