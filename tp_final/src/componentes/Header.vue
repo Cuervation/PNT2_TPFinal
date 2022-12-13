@@ -4,7 +4,7 @@
      <div class="jumbotron">      
         <div class="row">
           <div class="col-md-12">
-            <h1>Jugador : {{  $store.state.nombre  }}   -  Puntaje {{ $store.state.puntaje }}</h1>      
+            <h1>Jugador : {{  $store.state.nombre  | pasarAMayuscula }}   -  Puntaje {{ $store.state.puntaje }}</h1>      
           </div>
         </div>        
      </div>    

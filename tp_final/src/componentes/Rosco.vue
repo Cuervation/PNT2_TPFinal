@@ -15,7 +15,7 @@
 
         <vue-form class="formulario" :state="formState" @submit.prevent="postRespuesta()">
           <validate tag="div">
-            <div class="input-group mb-3">
+            <div class="input-group" :style= "{'margin-bottom' : '3px' }">              
               <div class="input-group-prepend">
                 <span
                   for="respuesta"
@@ -60,7 +60,7 @@
             </field-messages>
           </validate>          
         </vue-form>
-        <p v-if="resultado == 0"></p>
+        <p v-if="resultado == 0"></p>        
         <p v-else-if="resultado == 1" class="alert alert-danger">INCORRECTO!</p>
         <p v-else-if="resultado == 2" class="alert alert-success">CORRECTO!</p>
         <p v-else-if="resultado == 3" class="alert alert-info">PASAMOS A LA SIGUIENTE!</p>
@@ -124,7 +124,9 @@ export default {
             this.resultado = 3;
           }
           setTimeout(() => {
-            this.getPregunta();
+            this.formData = this.getInitialData();
+            this.formState._reset();
+            this.getPregunta();            
             this.getPuntaje(this.urlPuntaje);
             this.resultado = 0;
           }, 1000);
@@ -152,8 +154,8 @@ export default {
         this.letra = preguntas.letra;
         this.pregunta = preguntas.pregunta;
       } catch (error) {
-          this.getFinalizar(this.urlFinal);
-          this.actualizaRanking();
+          await this.getFinalizar(this.urlFinal);
+          await this.actualizaRanking();
           this.goRanking();
       }
     },

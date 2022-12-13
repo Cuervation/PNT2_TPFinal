@@ -80,13 +80,14 @@ export default {
       return {
         nombre: null,
         edad: null,
+        puntaje:0
       };
     },
-    enviar() {
+    async enviar() {
       let jugador = { ...this.formData };
       this.nombre = jugador.nombre;
       this.edad = jugador.edad;
-      this.getFinalizar(this.urlFinal);
+      await this.getFinalizar(this.urlFinal);
       this.postUsuario();
       this.formData = this.getInitialData();
       this.formState._reset();
@@ -96,8 +97,8 @@ export default {
 
     async postUsuario() {
       let usuarioNew = {
-        nombre: this.nombre,
-        edad: this.edad,
+        nombre: this.getNombreYEdad.nombre,
+        edad: this.getNombreYEdad.edad,
       };
       try {
         let { data: usuario, status: estado } = await this.axios.post(
@@ -111,6 +112,10 @@ export default {
             usuario.nombre,
             usuario.edad
           );
+          await this.$store.dispatch(
+            "setPuntaje",
+            0
+          );          
           this.goPantalla()
         }
       } catch (error) {
@@ -120,7 +125,16 @@ export default {
       }
     },
   },
-  computed: {},
+  computed: {
+      getNombreYEdad() {      
+        const nombre = this.nombre
+        const edad = this.edad
+        return {
+            nombre,
+            edad
+      }
+  }
+  },
 };
 </script>
 

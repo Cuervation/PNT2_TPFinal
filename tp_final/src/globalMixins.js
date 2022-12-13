@@ -2,6 +2,7 @@ import Vue from 'vue'
 
 const miMixinGlobal = {
     methods: {
+       /* A method that is called in the component. */
         async getFinalizar(url) {
             try {
               await this.axios.get(url);
